@@ -88,7 +88,7 @@ fn parse_error_add_span(
             ),
             Span::new(Pos::new(x as u32), Pos::new(y as u32)),
         ),
-        lu::ParseError::UnrecognizedEOF { .. } => (
+        lu::ParseError::UnrecognizedEof { .. } => (
             "Parse error: unexpected end of file".to_owned(),
             Span::new(Pos::new(pos as u32), Pos::new(pos as u32)),
         ),
