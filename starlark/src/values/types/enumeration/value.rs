@@ -19,7 +19,6 @@ use std::fmt;
 use std::fmt::Display;
 
 use allocative::Allocative;
-use derivative::Derivative;
 use dupe::Dupe;
 use either::Either;
 use starlark_derive::starlark_module;
@@ -50,7 +49,7 @@ use crate::values::ValueLike;
 /// A value from an enumeration.
 #[derive(
     Clone,
-    Derivative,
+    derive_more::Debug,
     Trace,
     Coerce,
     Freeze,
@@ -58,10 +57,9 @@ use crate::values::ValueLike;
     Allocative
 )]
 #[repr(C)]
-#[derivative(Debug)]
 pub struct EnumValueGen<V: ValueLifetimeless> {
     // Must ignore value.typ or type.elements, since they are circular
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     pub(crate) typ: V, // Must be EnumType it points back to (so it can get the type)
     pub(crate) value: V,   // The value of this enumeration
     pub(crate) index: i32, // The index in the enumeration

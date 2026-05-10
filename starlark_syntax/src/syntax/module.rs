@@ -21,7 +21,6 @@ use std::fs;
 use std::mem;
 use std::path::Path;
 
-use derivative::Derivative;
 use dupe::Dupe;
 use lalrpop_util as lu;
 
@@ -113,10 +112,9 @@ fn parse_error_add_span(
 ///
 /// The internal details (statements/expressions) are deliberately omitted, as they change
 /// more regularly. A few methods to obtain information about the AST are provided.
-#[derive(Derivative)]
-#[derivative(Debug, Clone)]
+#[derive(derive_more::Debug, Clone)]
 pub struct AstModule {
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     pub(crate) codemap: CodeMap,
     pub(crate) statement: AstStmt,
     pub(crate) dialect: Dialect,

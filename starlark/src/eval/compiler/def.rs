@@ -24,7 +24,6 @@ use std::fmt::Write;
 use std::ptr;
 
 use allocative::Allocative;
-use derivative::Derivative;
 use derive_more::Display;
 use dupe::Dupe;
 use once_cell::sync::Lazy;
@@ -319,8 +318,7 @@ pub(crate) struct CopySlotFromParent {
 }
 
 /// Static info for `def`, `lambda` or module.
-#[derive(Derivative, Display)]
-#[derivative(Debug)]
+#[derive(derive_more::Debug, Display)]
 #[display("DefInfo")]
 pub(crate) struct DefInfo {
     pub(crate) name: FrozenStringValue,
@@ -341,11 +339,11 @@ pub(crate) struct DefInfo {
     /// Module-level identifiers are not copied over, to avoid excess copying.
     pub(crate) parent: FrozenRef<'static, [CopySlotFromParent]>,
     /// Statement compiled for non-frozen def.
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     stmt_compiled: Bc,
     // The compiled expression for the body of this definition, to be run
     // after the parameters are evaluated.
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     body_stmts: StmtsCompiled,
     /// How to compile the statement on freeze.
     stmt_compile_context: StmtCompileContext,
@@ -530,8 +528,7 @@ impl Compiler<'_, '_, '_, '_> {
 
 /// Starlark function internal representation and implementation of
 /// [`StarlarkValue`].
-#[derive(Derivative, NoSerialize, ProvidesStaticType, Trace, Allocative)]
-#[derivative(Debug)]
+#[derive(derive_more::Debug, NoSerialize, ProvidesStaticType, Trace, Allocative)]
 pub(crate) struct DefGen<V> {
     pub(crate) parameters: ParametersSpec<V>, // The parameters, **kwargs etc including defaults (which are evaluated afresh each time)
     /// Indices of parameters, which are captured in nested defs.
@@ -550,14 +547,14 @@ pub(crate) struct DefGen<V> {
     /// [`ValueCaptured`] or [`FrozenValueCaptured`].
     captured: Vec<V>,
     // Important to ignore these field as it probably references DefGen in a cycle
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     /// A reference to the module where the function is defined after the module has been frozen.
     /// When the module is not frozen yet, this field contains `None`, and function's module
     /// can be accessed from evaluator's module.
     #[allocative(skip)]
     pub(crate) module: AtomicFrozenRefOption<FrozenModuleData>,
     /// This field is only used in `FrozenDef`. It is populated in `post_freeze`.
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     #[allocative(skip)]
     optimized_on_freeze_stmt: StmtCompiledCell,
 }

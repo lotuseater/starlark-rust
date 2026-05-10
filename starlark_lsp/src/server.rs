@@ -25,7 +25,6 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::RwLock;
 
-use derivative::Derivative;
 use derive_more::Display;
 use dupe::Dupe;
 use dupe::OptionDupedExt;
@@ -249,8 +248,7 @@ impl TryFrom<&LspUrl> for Url {
 }
 
 /// The result of resolving a StringLiteral when looking up a definition.
-#[derive(Derivative)]
-#[derivative(Debug)]
+#[derive(derive_more::Debug)]
 pub struct StringLiteralResult {
     /// The path that a string literal resolves to.
     pub url: LspUrl,
@@ -258,7 +256,7 @@ pub struct StringLiteralResult {
     /// allows resolving a location to jump to within the specific URL if desired.
     ///
     /// If `None`, then just jump to the URL. Do not attempt to load the file.
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     pub location_finder: Option<Box<dyn FnOnce(&AstModule) -> anyhow::Result<Option<Span>> + Send>>,
 }
 

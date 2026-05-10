@@ -18,7 +18,6 @@
 //! Function types, including native functions and `object.member` functions.
 
 use allocative::Allocative;
-use derivative::Derivative;
 use derive_more::Display;
 use dupe::Dupe;
 use starlark_derive::starlark_value;
@@ -128,11 +127,10 @@ impl<T> NativeAttr for T where
 /// Starlark representation of native (Rust) functions.
 ///
 /// Almost always created with [`#[starlark_module]`](macro@crate::starlark_module).
-#[derive(Derivative, ProvidesStaticType, Display, NoSerialize, Allocative)]
-#[derivative(Debug)]
+#[derive(derive_more::Debug, ProvidesStaticType, Display, NoSerialize, Allocative)]
 #[display("{}", name)]
 pub(crate) struct NativeFunction {
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     #[allocative(skip)]
     pub(crate) function: Box<dyn NativeFunc>,
     pub(crate) name: String,
@@ -141,7 +139,7 @@ pub(crate) struct NativeFunction {
     pub(crate) ty: Ty,
     /// Safe to evaluate speculatively.
     pub(crate) speculative_exec_safe: bool,
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     pub(crate) docs: DocItem,
     pub(crate) special_builtin_function: Option<SpecialBuiltinFunction>,
 }
@@ -250,18 +248,17 @@ impl<'v> StarlarkValue<'v> for NativeFunction {
     }
 }
 
-#[derive(Derivative, Display, NoSerialize, ProvidesStaticType, Allocative)]
-#[derivative(Debug)]
+#[derive(derive_more::Debug, Display, NoSerialize, ProvidesStaticType, Allocative)]
 #[display("{}", name)]
 pub(crate) struct NativeMethod {
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     #[allocative(skip)]
     pub(crate) function: FrozenRef<'static, dyn NativeMeth>,
     pub(crate) name: String,
     pub(crate) ty: Ty,
     /// Safe to evaluate speculatively.
     pub(crate) speculative_exec_safe: bool,
-    #[derivative(Debug = "ignore")]
+    #[debug(skip)]
     pub(crate) docs: DocItem,
 }
 
@@ -280,9 +277,8 @@ impl<'v> StarlarkValue<'v> for NativeMethod {
 
 /// Used by the `#[starlark(attribute)]` tag of [`#[starlark_module]`](macro@starlark_module)
 /// to define a function that pretends to be an attribute.
-#[derive(Derivative, Display, NoSerialize, ProvidesStaticType, Allocative)]
+#[derive(derive_more::Debug, Display, NoSerialize, ProvidesStaticType, Allocative)]
 #[display("Attribute")]
-#[derivative(Debug)]
 pub(crate) struct NativeAttribute {
     /// Safe to evaluate speculatively.
     pub(crate) speculative_exec_safe: bool,
